@@ -5,6 +5,7 @@ import random
 import sys
 
 from methods import METHODS
+from postprocess import PROCESSORS
 
 
 def parse_arguments():
@@ -12,9 +13,25 @@ def parse_arguments():
     parser.add_argument("input", help="Path to the source code.")
     parser.add_argument("-o", "--output", help="Path to the output code. Print by default.")
     parser.add_argument("-m", "--methods", help="Coma-separated methods.")
+    parser.add_argument("-p", "--processors", help="Coma-separated post processors.")
     parser.add_argument("-s", "--seed", help="Random seed.", type=int)
     parser.add_argument("-l", "--level", help="Obfuscation level.", type=float, default=0.5)
     return parser.parse_args()
+
+
+def apply(obj, collection, names=None):
+    if names is not None:
+        try:
+            collection = {k: collection[k] for k in names.split(",")}
+        except KeyError:
+            print("Available methods:", list(collection))
+            raise
+
+    for method in collection.values():
+        result = method(obj, level=args.level)
+        if result is not None:
+            obj = result
+    return obj
 
 
 def main(args):
@@ -22,21 +39,13 @@ def main(args):
     if args.seed is not None:
         random.seed(args.seed)
 
-    methods = METHODS
-    if args.methods is not None:
-        try:
-            methods = {k: methods[k] for k in args.methods.split(",")}
-        except KeyError:
-            print("Available methods:", list(methods))
-            raise
-
     with open(args.input) as fp:
         st = ast.parse(fp.read())
 
-    for method in methods.values():
-        method(st, level=args.level)
-
+    apply(st, METHODS, args.methods)
     result = ast.unparse(st)
+    result = apply(result, PROCESSORS, args.processors)
+
     if args.output is None:
         print(result)
     else:

@@ -53,4 +53,5 @@ def shuffle_methods_classes(st, level=1.0):
         st.body[i] = node
     if isinstance(st, ast.Module):
         logging.info(f"Found {total} functions and classes")
-    return total
+    else:
+        return total
