@@ -19,4 +19,9 @@ def update_whitespace(text, level=1.0):
     for _ in range(int(len(rows) * 0.1 * level)):
         index = random.randint(0, len(rows) - 1)
         rows[index] = rows[index] + gen_comment()
-    return "\n".join(rows)
+    text = "\n".join(rows)
+    if random.random() < 0.3:
+        text = text.replace("    ", "  ")
+    elif random.random() < 0.3:
+        text = text.replace("  ", "    ")
+    return text
