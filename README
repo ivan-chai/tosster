@@ -1,0 +1,5 @@
+Simple obfuscator using ast.
+
+**NOTE: obfuscation might CORRUPT BEHAVIOUR.**
+
+Code is used for simple anti-plagiat dataset preparation and evaluation.
