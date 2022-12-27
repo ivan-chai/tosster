@@ -22,7 +22,7 @@ def main(args):
         path1, path2 = line.strip().split()
         file1, file2 = map(lambda path: read(path, lines=not args.character), (path1, path2))
         distance = Levenshtein.distance(file1, file2)
-        distance /= max(len(file1), len(file2))
+        distance /= max(max(len(file1), len(file2)), 1)
         print(max(1 - distance, 0))
 
 
